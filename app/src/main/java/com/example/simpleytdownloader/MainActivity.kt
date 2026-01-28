@@ -27,6 +27,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     private var isDownloading = false
     private var currentProcessId: String? = null
+    private var selectedQuality = 720  // 默认 720p
 
     companion object {
         private const val PERMISSION_REQUEST_CODE = 1001
@@ -113,6 +114,20 @@ class MainActivity : AppCompatActivity() {
         binding.updateButton.setOnClickListener {
             updateYtDlp()
         }
+
+        // 清晰度选择
+        binding.qualityChipGroup.setOnCheckedStateChangeListener { _, checkedIds ->
+            if (checkedIds.isNotEmpty()) {
+                selectedQuality = when (checkedIds[0]) {
+                    R.id.quality360 -> 360
+                    R.id.quality480 -> 480
+                    R.id.quality720 -> 720
+                    R.id.quality1080 -> 1080
+                    R.id.qualityBest -> 0  // 0 表示最高清晰度
+                    else -> 720
+                }
+            }
+        }
     }
 
     private fun checkPermissions() {
@@ -179,6 +194,7 @@ class MainActivity : AppCompatActivity() {
             appendLine("📊 分辨率: ${info.width ?: "?"}x${info.height ?: "?"}")
         }
         binding.videoInfoCard.visibility = View.VISIBLE
+        binding.qualityCard.visibility = View.VISIBLE
         binding.downloadButtons.visibility = View.VISIBLE
         binding.statusText.text = "✅ 视频信息获取成功"
     }
@@ -234,8 +250,15 @@ class MainActivity : AppCompatActivity() {
                         addOption("--audio-format", "mp3")
                         addOption("--audio-quality", "0")  // 最高质量
                     } else {
-                        // 使用更兼容的格式选择
-                        addOption("-f", "bestvideo[height<=1080][ext=mp4]+bestaudio[ext=m4a]/bestvideo[height<=1080]+bestaudio/best[height<=1080]/best")
+                        // 根据用户选择设置清晰度
+                        val formatString = if (selectedQuality == 0) {
+                            // 最高清晰度
+                            "bestvideo[ext=mp4]+bestaudio[ext=m4a]/bestvideo+bestaudio/best"
+                        } else {
+                            // 指定清晰度
+                            "bestvideo[height<=${selectedQuality}][ext=mp4]+bestaudio[ext=m4a]/bestvideo[height<=${selectedQuality}]+bestaudio/best[height<=${selectedQuality}]/best"
+                        }
+                        addOption("-f", formatString)
                         addOption("--merge-output-format", "mp4")
                     }
                     
