@@ -221,18 +221,25 @@ class MainActivity : AppCompatActivity() {
                     addOption("-o", "${downloadDir.absolutePath}/%(title)s.%(ext)s")
                     addOption("--no-mtime")
                     
+                    // 网络优化
+                    addOption("--retries", "10")
+                    addOption("--fragment-retries", "10")
+                    addOption("--socket-timeout", "30")
+                    
+                    // 避免被检测
+                    addOption("--user-agent", "Mozilla/5.0 (Linux; Android 13) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Mobile Safari/537.36")
+                    
                     if (audioOnly) {
                         addOption("-x")  // 仅提取音频
                         addOption("--audio-format", "mp3")
                         addOption("--audio-quality", "0")  // 最高质量
                     } else {
-                        addOption("-f", "bestvideo[ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]/best")
+                        // 使用更兼容的格式选择
+                        addOption("-f", "bestvideo[height<=1080][ext=mp4]+bestaudio[ext=m4a]/bestvideo[height<=1080]+bestaudio/best[height<=1080]/best")
                         addOption("--merge-output-format", "mp4")
                     }
-
-                    // 使用 aria2c 加速下载
-                    addOption("--downloader", "libaria2c.so")
-                    addOption("--downloader-args", "aria2c:'-x 16 -s 16 -k 1M'")
+                    
+                    // 不使用 aria2c，使用内置下载器（更稳定）
                 }
 
                 YoutubeDL.getInstance().execute(
