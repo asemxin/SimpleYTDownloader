@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<adaptive-icon xmlns:android="http://schemas.android.com/apk/res/android">
+    <background android:drawable="@color/primary"/>
+    <foreground>
+        <inset android:inset="25%">
+            <vector
+                android:width="108dp"
+                android:height="108dp"
+                android:viewportWidth="24"
+                android:viewportHeight="24">
+                <!-- Download arrow icon -->
+                <path
+                    android:fillColor="#FFFFFF"
+                    android:pathData="M19,9h-4V3H9v6H5l7,7,7,-7zM5,18v2h14v-2H5z"/>
+            </vector>
+        </inset>
+    </foreground>
+</adaptive-icon>
