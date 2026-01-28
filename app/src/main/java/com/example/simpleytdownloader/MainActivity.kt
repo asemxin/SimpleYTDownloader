@@ -234,8 +234,10 @@ class MainActivity : AppCompatActivity() {
         lifecycleScope.launch(Dispatchers.IO) {
             try {
                 val request = YoutubeDLRequest(url).apply {
-                    addOption("-o", "${downloadDir.absolutePath}/%(title)s.%(ext)s")
+                    // 限制文件名长度，避免太长导致错误
+                    addOption("-o", "${downloadDir.absolutePath}/%(title).100s.%(ext)s")
                     addOption("--no-mtime")
+                    addOption("--restrict-filenames")  // 替换特殊字符
                     
                     // 网络优化
                     addOption("--retries", "10")
