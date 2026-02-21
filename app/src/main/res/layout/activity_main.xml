@@ -16,7 +16,9 @@
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             android:background="@color/primary"
-            app:title="@string/app_name"
+            app:title="🎬 YouTube 视频下载器"
+            app:subtitle="跨平台视频下载工具 · 支持多种画质"
+            app:subtitleTextColor="#B0FFFFFF"
             app:titleTextColor="@color/white" />
     </com.google.android.material.appbar.AppBarLayout>
 
@@ -36,7 +38,7 @@
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp"
+                android:layout_marginBottom="12dp"
                 app:cardCornerRadius="12dp"
                 app:cardElevation="4dp">
 
@@ -57,7 +59,7 @@
                     <com.google.android.material.textfield.TextInputLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="粘贴 YouTube 链接"
+                        android:hint="粘贴 YouTube 链接..."
                         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
 
                         <com.google.android.material.textfield.TextInputEditText
@@ -99,7 +101,7 @@
                 android:id="@+id/videoInfoCard"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp"
+                android:layout_marginBottom="12dp"
                 android:visibility="gone"
                 app:cardCornerRadius="12dp"
                 app:cardElevation="4dp"
@@ -129,16 +131,14 @@
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
-            <!-- 清晰度选择 -->
+            <!-- 清晰度选择 (默认可见) -->
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/qualityCard"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp"
-                android:visibility="gone"
+                android:layout_marginBottom="12dp"
                 app:cardCornerRadius="12dp"
-                app:cardElevation="4dp"
-                tools:visibility="visible">
+                app:cardElevation="4dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -165,7 +165,7 @@
                             android:id="@+id/quality360"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="360p"
+                            android:text="360p (最小)"
                             style="@style/Widget.MaterialComponents.Chip.Choice" />
 
                         <com.google.android.material.chip.Chip
@@ -179,7 +179,7 @@
                             android:id="@+id/quality720"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="720p"
+                            android:text="720p (推荐)"
                             android:checked="true"
                             style="@style/Widget.MaterialComponents.Chip.Choice" />
 
@@ -194,32 +194,30 @@
                             android:id="@+id/qualityBest"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="最高"
+                            android:text="最高画质"
                             style="@style/Widget.MaterialComponents.Chip.Choice" />
 
                     </com.google.android.material.chip.ChipGroup>
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
-            <!-- 下载按钮区域 -->
+            <!-- 下载按钮区域 (默认可见) -->
             <LinearLayout
                 android:id="@+id/downloadButtons"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:visibility="gone"
-                android:layout_marginBottom="16dp"
-                tools:visibility="visible">
+                android:layout_marginBottom="12dp">
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/downloadVideoButton"
                     android:layout_width="0dp"
                     android:layout_height="56dp"
                     android:layout_weight="1"
-                    android:text="📹 下载视频"
+                    android:text="📥 下载视频"
                     android:textSize="14sp"
                     android:layout_marginEnd="8dp"
-                    app:backgroundTint="@color/secondary"
+                    app:backgroundTint="@color/primary"
                     app:cornerRadius="12dp" />
 
                 <com.google.android.material.button.MaterialButton
@@ -239,9 +237,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:visibility="gone"
-                android:layout_marginBottom="16dp"
+                android:layout_marginBottom="8dp"
                 app:trackCornerRadius="8dp"
-                app:indicatorColor="@color/primary"
+                app:indicatorColor="@color/secondary"
+                app:trackColor="#E0E0E0"
                 tools:visibility="visible"
                 tools:progress="50" />
 
@@ -250,9 +249,9 @@
                 android:id="@+id/cancelButton"
                 android:layout_width="match_parent"
                 android:layout_height="48dp"
-                android:text="⏹️ 取消下载"
+                android:text="✖ 取消下载"
                 android:visibility="gone"
-                android:layout_marginBottom="16dp"
+                android:layout_marginBottom="12dp"
                 style="@style/Widget.MaterialComponents.Button.OutlinedButton"
                 app:strokeColor="@color/error"
                 android:textColor="@color/error" />
@@ -261,7 +260,7 @@
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp"
+                android:layout_marginBottom="12dp"
                 app:cardCornerRadius="12dp"
                 app:cardElevation="2dp"
                 app:cardBackgroundColor="@color/surface">
@@ -285,8 +284,51 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="准备就绪，请输入视频链接"
+                        android:text="等待输入链接..."
                         android:textSize="14sp" />
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- 下载日志区域 -->
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/logCard"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="12dp"
+                app:cardCornerRadius="12dp"
+                app:cardElevation="2dp"
+                app:cardBackgroundColor="@color/log_background">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="16dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="📋 下载日志"
+                        android:textSize="14sp"
+                        android:textStyle="bold"
+                        android:layout_marginBottom="8dp" />
+
+                    <ScrollView
+                        android:id="@+id/logScrollView"
+                        android:layout_width="match_parent"
+                        android:layout_height="160dp"
+                        android:fillViewport="true">
+
+                        <TextView
+                            android:id="@+id/logText"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="monospace"
+                            android:textSize="12sp"
+                            android:textColor="@color/text_primary"
+                            android:lineSpacingMultiplier="1.4"
+                            android:text="✓ 程序已启动\n支持 YouTube / Bilibili / Twitter 等平台" />
+                    </ScrollView>
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
@@ -306,7 +348,7 @@
                 android:textSize="12sp"
                 android:textColor="@color/text_secondary"
                 android:lineSpacingMultiplier="1.4"
-                android:layout_marginTop="16dp" />
+                android:layout_marginTop="8dp" />
 
         </LinearLayout>
     </ScrollView>

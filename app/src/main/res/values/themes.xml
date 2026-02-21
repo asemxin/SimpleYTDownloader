@@ -8,5 +8,6 @@
         <item name="android:statusBarColor">@color/primary_dark</item>
         <item name="android:navigationBarColor">@color/primary_dark</item>
         <item name="android:windowBackground">@color/background</item>
+        <item name="colorError">@color/error</item>
     </style>
 </resources>
