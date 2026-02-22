@@ -278,6 +278,31 @@ class MainActivity : AppCompatActivity() {
         val typeLabel = if (audioOnly) "音频" else "视频"
 
         lifecycleScope.launch(Dispatchers.IO) {
+            // 下载前自动更新 yt-dlp
+            withContext(Dispatchers.Main) {
+                binding.statusText.text = "🔍 检查 yt-dlp 更新..."
+                log("🔍 检查 yt-dlp 更新...")
+            }
+            try {
+                val updateStatus = YoutubeDL.getInstance().updateYoutubeDL(
+                    this@MainActivity,
+                    YoutubeDL.UpdateChannel.NIGHTLY
+                )
+                withContext(Dispatchers.Main) {
+                    when (updateStatus) {
+                        YoutubeDL.UpdateStatus.DONE -> log("✅ yt-dlp 已更新到最新版")
+                        YoutubeDL.UpdateStatus.ALREADY_UP_TO_DATE -> log("✅ yt-dlp 已是最新版")
+                        else -> log("ℹ️ yt-dlp 更新状态: $updateStatus")
+                    }
+                    logSeparator()
+                }
+            } catch (e: Exception) {
+                withContext(Dispatchers.Main) {
+                    log("⚠️ yt-dlp 更新检查失败: ${e.message?.take(80)}，继续下载...")
+                    logSeparator()
+                }
+            }
+
             var lastError: String? = null
 
             for (attempt in 1..MAX_RETRIES) {
@@ -336,8 +361,11 @@ class MainActivity : AppCompatActivity() {
                         addOption("--socket-timeout", "30")
                         addOption("--http-chunk-size", "10M")
 
+                        // 绕过 YouTube 403 - 使用 mweb 客户端，不需要 PO Token
+                        addOption("--extractor-args", "youtube:player_client=mweb,android,ios")
+
                         // User-Agent
-                        addOption("--user-agent", "Mozilla/5.0 (Linux; Android 13) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Mobile Safari/537.36")
+                        addOption("--user-agent", "Mozilla/5.0 (Linux; Android 14) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Mobile Safari/537.36")
 
                         if (audioOnly) {
                             addOption("-x")
@@ -403,10 +431,10 @@ class MainActivity : AppCompatActivity() {
                         return@launch
                     }
 
-                    // 检查是否为网络错误
+                    // 检查是否为网络/403错误
                     val isNetworkError = listOf(
                         "ssl", "eof", "connection", "timeout", "reset", "network",
-                        "http", "socket", "broken pipe"
+                        "http", "socket", "broken pipe", "403", "forbidden"
                     ).any { errorMsg.lowercase().contains(it) }
 
                     if (isNetworkError && attempt < MAX_RETRIES) {
